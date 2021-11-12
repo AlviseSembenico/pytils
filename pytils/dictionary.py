@@ -1,0 +1,45 @@
+from copy import deepcopy
+from typing import Any, Dict
+
+
+def merge_dicts(a: Dict, b: Dict):
+    """Merge two dictionaries in a recursive way.
+    It means that if there is a key match, the keys is merged as well.
+    Only dict and list keys merging is supported
+    Args:
+        a (Dict):
+        b (Dict)
+    Raises:
+        ValueError: if a key is present in both the dictionaries and does not falls
+        in one of these classes: Dict, List
+    """
+    res = deepcopy(a)
+    for k, v in b.items():
+        if k not in res:
+            res[k] = v
+        else:
+            if isinstance(v, dict):
+                res[k] = merge_dicts(res[k], v)
+            elif isinstance(v, list):
+                res[k] += v
+            else:
+                raise ValueError(
+                    f"""Impossible to merge {res[k].__class__} and {v.__class__}.
+                    Data structure combinations not supported. Only merge between list and dict possible"""
+                )
+    return res
+
+
+def get_nested_values(obj: Dict, path: str) -> Any:
+    keys = path.split(".")
+    current_key = keys[0]
+    if len(keys) == 1:
+        return obj.get(path)
+
+    if current_key.endswith("[]"):
+        current_key = current_key[:-2]
+        return [
+            get_nested_values(element, ".".join(keys[1:]))
+            for element in obj.get(current_key)
+        ]
+    return get_nested_values(obj.get(current_key), ".".join(keys[1:]))

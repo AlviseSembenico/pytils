@@ -30,16 +30,35 @@ def merge_dicts(a: Dict, b: Dict):
     return res
 
 
-def get_nested_values(obj: Dict, path: str) -> Any:
+def get_key(obj: Any, key: str):
+    try:
+        return obj.get(key)
+    except:
+        return getattr(obj, key)
+
+
+def get_nested_value(obj: Any, path: str) -> Any:
+    if "[]" in path:
+        raise Exception(
+            "This function works only for non array objects. Use get_nested_values instead"
+        )
     keys = path.split(".")
     current_key = keys[0]
     if len(keys) == 1:
-        return obj.get(path)
+        return get_key(obj, path)
+    return get_nested_value(get_key(obj, current_key), ".".join(keys[1:]))
+
+
+def get_nested_values(obj: Any, path: str) -> Any:
+    keys = path.split(".")
+    current_key = keys[0]
+    if len(keys) == 1:
+        return get_key(obj, path)
 
     if current_key.endswith("[]"):
         current_key = current_key[:-2]
         return [
             get_nested_values(element, ".".join(keys[1:]))
-            for element in obj.get(current_key)
+            for element in get_key(obj, current_key)
         ]
-    return get_nested_values(obj.get(current_key), ".".join(keys[1:]))
+    return get_nested_values(get_key(obj, current_key), ".".join(keys[1:]))

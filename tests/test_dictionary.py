@@ -17,3 +17,4 @@ class TestDictionary:
     def test_set_nested_value(self):
         res = set_nested_value(self.value, "nested.b", -1)
         assert res["nested"]["b"] == -1
+        assert not self.value["nested"]["b"] == -1

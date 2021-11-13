@@ -37,6 +37,13 @@ def get_key(obj: Any, key: str):
         return getattr(obj, key)
 
 
+def set_key(obj: Any, key: str, value: Any):
+    try:
+        obj[key] = value
+    except:
+        setattr(obj, key, value)
+
+
 def get_nested_value(obj: Any, path: str) -> Any:
     if "[]" in path:
         raise Exception(
@@ -47,6 +54,21 @@ def get_nested_value(obj: Any, path: str) -> Any:
     if len(keys) == 1:
         return get_key(obj, path)
     return get_nested_value(get_key(obj, current_key), ".".join(keys[1:]))
+
+
+def set_nested_value(obj: Any, path: str, value: Any) -> Any:
+    def aux(obj: Any, path: str, value: Any):
+        keys = path.split(".")
+        current_key = keys[0]
+        if len(keys) == 1:
+            set_key(obj, path, value)
+            return
+
+        aux(get_key(obj, current_key), ".".join(keys[1:]), value)
+
+    instance = deepcopy(obj)
+    aux(instance, path, value)
+    return instance
 
 
 def get_nested_values(obj: Any, path: str) -> Any:

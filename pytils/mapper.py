@@ -19,5 +19,5 @@ class IterMapper:
         res = get_nested_value(self.items[index], self.path)
         return res
 
-    def set_value(self, index: int, value: Any):
+    def __setitem__(self, index: int, value: Any):
         self.items[index] = set_nested_value(self.items[index], self.path, value)

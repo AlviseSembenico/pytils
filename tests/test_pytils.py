@@ -3,11 +3,9 @@
 """Tests for `pytils` package."""
 
 import pytest
-
 from click.testing import CliRunner
 
-from pytils import pytils
-from pytils import cli
+from pytils import cli, pytils
 
 
 @pytest.fixture

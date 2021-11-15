@@ -1,5 +1,6 @@
 """Console script for pytils."""
 import sys
+
 import click
 
 

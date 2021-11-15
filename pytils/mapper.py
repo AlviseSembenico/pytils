@@ -30,6 +30,8 @@ class IterMapper:
     def __iter__(self):
         for item in self.items:
             values = get_nested_values(item, self.path)
+            if not isinstance(values, list):
+                values = [values]
             for value in values:
                 yield value
 

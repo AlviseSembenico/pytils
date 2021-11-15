@@ -1,14 +1,14 @@
-from typing import Any, Iterator
+from typing import Any, Iterator, List
 
 from pytils.dictionary import get_nested_values, set_nested_value
 
 
 class IterMapper:
-    items: Iterator
+    items: List
     path: str
     batch_size: int
 
-    def __init__(self, items: Iterator, path: str, batch_size=-1) -> None:
+    def __init__(self, items: List, path: str, batch_size=-1) -> None:
         self.items = items
         self.path = path
         self.batch_size = batch_size

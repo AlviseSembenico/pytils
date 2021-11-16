@@ -5,8 +5,13 @@ class TestMapper:
 
     value = {"a": 1, "nested": {"b": 2}, "list": [{"c": 3}, {"c": 4}]}
     value_list = [
-        {"list": [{"c": 3}, {"c": 4}]},
-        {"list": [{"c": 5}, {"c": 6}]},
+        {"list": [{"c": 3}, {"c": 4}], "name": "a"},
+        {"list": [{"c": 5}, {"c": 6}], "name": "b"},
+    ]
+    value_list_group = [
+        {"list": [{"c": 3}, {"c": 4}], "name": "a"},
+        {"list": [{"c": 5}, {"c": 6}], "name": "b"},
+        {"list": [{"c": 5}, {"c": 6}], "name": "c"},
     ]
 
     def test_get_item(self):
@@ -26,3 +31,9 @@ class TestMapper:
         assert obj[2] == 5
         assert obj[3] == 6
         assert list(obj) == [3, 4, 5, 6]
+
+    def test_group_by(self):
+        obj = IterMapper(self.value_list_group, "list[].c")
+        res = obj.group_by("list[].c", "name")
+        assert 3 in res.keys()
+        assert res[5] == ["b", "c"]

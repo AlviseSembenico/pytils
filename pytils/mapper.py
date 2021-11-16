@@ -1,6 +1,7 @@
-from typing import Any, Iterator, List
+from collections import defaultdict
+from typing import Any, List
 
-from pytils.dictionary import get_nested_values, set_nested_value
+from pytils.dictionary import get_nested_value, get_nested_values, set_nested_value
 
 
 class IterMapper:
@@ -38,4 +39,15 @@ class IterMapper:
     def __next__(self):
         res = self.__getitem__(self.index)
         self.index += 1
+        return res
+
+    def group_by(self, key_path: str, value_path: str, key_func=None):
+        res = defaultdict(list)
+        for item in self.items:
+            keys = get_nested_values(item, key_path)
+            value = get_nested_values(item, value_path)
+            for key in keys:
+                if key_func is not None:
+                    key = key_func(key)
+                res[key].append(value)
         return res
